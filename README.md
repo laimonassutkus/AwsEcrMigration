@@ -24,9 +24,10 @@ or:
 #### Pulling from ECR repository
 ```python
 from aws_ecr_migration.manage import Manager
+from aws_ecr_migration.aws_credentials import AwsCredentials
 
 manager = Manager(
-    region='eu-west-1', 
+    credentials=AwsCredentials(), 
     remote_repository='remote/repository'
 )
 
@@ -36,25 +37,25 @@ manager.pull()
 #### Pushing an image to ECR repository
 ```python
 from aws_ecr_migration.manage import Manager
+from aws_ecr_migration.aws_credentials import AwsCredentials
 
 manager = Manager(
-    region='eu-west-1', 
-    local_image='myimage',
+    credentials=AwsCredentials(), 
     remote_repository='remote/repository'
 )
 
-manager.push_image()
+manager.push_image('myimage')
 ```
 
 #### Pushing a running container to ECR repository
 ```python
 from aws_ecr_migration.manage import Manager
+from aws_ecr_migration.aws_credentials import AwsCredentials
 
 manager = Manager(
-    region='eu-west-1', 
-    local_container='mycontainer',
+    credentials=AwsCredentials(), 
     remote_repository='remote/repository'
 )
 
-manager.push_image()
+manager.push_container('mycontainer')
 ```
