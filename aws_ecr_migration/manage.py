@@ -4,6 +4,7 @@ import boto3
 import base64
 
 from typing import Any, List
+from botocore.exceptions import ClientError
 from aws_ecr_migration import root
 from aws_ecr_migration.aws_credentials import AwsCredentials
 
@@ -20,7 +21,7 @@ class Manager:
         Constructor.
 
         :param credentials: Aws account credentials that have access to specified ECR repository.
-        :param remote_repository: A remote ECR repository name.
+        :param remote_repository: A remote ECR repository URI.
         """
         self.remote_repository = remote_repository
 
@@ -58,6 +59,36 @@ class Manager:
         :return: No return.
         """
         self.__login_and_execute([f'{root}/ecr_pull.sh', self.remote_repository])
+
+    def repository_exists(self):
+        """
+        Checks whether a remote repository exists.
+
+        :return: True if exists, false otherwise.
+        """
+        try:
+            self.ecr_client.describe_repositories(
+                repositoryNames=[self.remote_repository.split('/')[1]],
+            )
+            return True
+        except ClientError as ex:
+            if ex.response['Error']['Code'] == 'RepositoryNotFoundException':
+                return False
+
+            raise
+
+    def repository_empty(self):
+        """
+        Checks whether a remote repository is empty or not.
+
+        :return: True if empty, false otherwise.
+        """
+        response = self.ecr_client.list_images(
+            repositoryName=self.remote_repository.split('/')[1],
+        )
+
+        ids = response['imageIds']
+        return len(ids) == 0
 
     def __ecr_login(self) -> str:
         response = self.ecr_client.get_authorization_token()
