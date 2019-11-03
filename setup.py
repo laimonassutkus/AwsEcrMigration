@@ -8,8 +8,8 @@ with open('HISTORY.md') as history_file:
 
 setup(
     name='aws_ecr_migration',
-    version='1.2.0',
-    packages=find_packages(),
+    version='1.2.1',
+    packages=find_packages(exclude=('test', 'venv')),
     description=(
         'Management project which migrates docker images to/from ECR repositories.'
     ),
