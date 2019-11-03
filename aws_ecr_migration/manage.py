@@ -52,6 +52,16 @@ class Manager:
         """
         self.__login_and_execute([f'{root}/ecr_push_image.sh', image, self.remote_repository])
 
+    def pull_image(self, image: str):
+        """
+        Pulls a specified image.
+
+        :param image: Image to pull.
+
+        :return: No return.
+        """
+        self.__login_and_execute(['docker', 'pull', image])
+
     def pull(self):
         """
         Pulls docker image from a remote ECR repository.
